@@ -1,15 +1,18 @@
-# Index all the TextGrids in a Table object
+#   create_index-dialog - UI for indexing TextGrid files into a Table object
+#   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
 #
-# Written by Rolando Munoz A. (08 Sep 2017)
-# Las modified on 12 December 2021
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-# This script is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
 #
-# A copy of the GNU General Public License is available at
-# <http://www.gnu.org/licenses/1>.
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
 # Constants
@@ -23,27 +26,35 @@ ok_btn = 3
 repeat
 	@config.init: config_path$
 	beginPause: "Create index"
-		text: "Folder with annotation files", config.init.return$["textgrids_dir"]
+		folder: "Folder with annotation files", config.init.return$["textgrids_dir"]
 		word: "Annotation file extension:", "TextGrid"
-		boolean: "Process subfolders as well", number(config.init.return$["create_index.process_subfolders_as_well"])
-		boolean: "Include empty intervals", number(config.init.return$["create_index.include_empty_intervals"])
-		comment: "Next step..."
-		optionMenu: "Do", number(config.init.return$["create_index.do"])
+		boolean: "Include subfolders", number(config.init.return$["create_index.include_subfolders"])
+		boolean: "Keep empty intervals", number(config.init.return$["create_index.keep_empty_intervals"])
+		comment: "Next..."
+		optionMenu: "Action", number(config.init.return$["create_index.do"])
 			option: ""
 			option: "Search..."
-	clicked = endPause: "Cancel","Apply", "Ok", 3, 1
+	clicked = endPause: "Cancel","Apply", "OK", 3, 1
 
 	# Stop
 	if clicked == cancel_btn
 		exitScript()
 	endif
 
-	textGrid_directory$ = folder_with_annotation_files$
+	textgrid_dir$ = folder_with_annotation_files$
+
+	# Verify the data in the dialog
+	if not folderExists(textgrid_dir$)
+		@quit_dialog: "The directory ""'textgrid_dir$'"" does not exist."
+		exitScript()
+	endif
+
+
 	# Set values
-	@config.set_value: "textgrids_dir", textGrid_directory$
-	@config.set_value: "create_index.do", string$(do)
-	@config.set_value: "create_index.process_subfolders_as_well", string$(process_subfolders_as_well)
-	@config.set_value: "create_index.include_empty_intervals", string$(include_empty_intervals)
+	@config.set_value: "textgrids_dir", textgrid_dir$
+	@config.set_value: "create_index.do", string$(action)
+	@config.set_value: "create_index.include_subfolders", string$(include_subfolders)
+	@config.set_value: "create_index.keep_empty_intervals", string$(keep_empty_intervals)
 	@config.set_value: "search.tier_name_option", "1"
 	@config.set_value: "search.search_for", ""
 	@config.set_value: "search.mode", "1"
@@ -56,13 +67,15 @@ repeat
 	@config.set_value: "extract_files.save_in", ""
 	@config.write
 
-	runScript: "create_index.praat", textGrid_directory$, annotation_file_extension$, process_subfolders_as_well, include_empty_intervals, temp_directory$
+	# Create an index
+	runScript: "create_index.praat", textgrid_dir$, annotation_file_extension$, include_subfolders, keep_empty_intervals, temp_directory$
+
 	if not fileReadable(index_path$)
 		@warning_dialog: "No TextGrid files found"
 	else
-		if do == 2
+		if action == 2
 			runScript: "search.praat"
-		endif		
+		endif
 	endif
 
 until clicked == ok_btn
