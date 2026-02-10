@@ -1,12 +1,25 @@
-# Copyright 2017-2025 Rolando Munoz Aramburú
+# Copyright 2017-2026 Rolando Munoz Aramburú
 if variableExists("plugin_dir$") == 0
     plugin_dir$ = "."
 endif
 
-if praatVersion < 6139
-  appendInfoLine: "Plug-in name: Finder"
-  appendInfoLine: "Warning: This plug-in only works on Praat version 6.0.39 or later. Please, get a more recent version of Praat."
-  appendInfoLine: "Praat website: http://www.fon.hum.uva.nl/praat/"
+
+# Define the version check logic
+is_old = praatVersion < 6406
+is_buggy_range = praatVersion > 6451 and praatVersion < 6460
+
+if is_old or is_buggy_range
+    appendInfoLine: "Plugin: Finder"
+    
+    if is_old
+        appendInfoLine: "Warning: This plugin requires Praat version 6.4.06 or later."
+    else
+        appendInfoLine: "Warning: This plugin is incompatible with Praat version 'praatVersion$' due to internal bugs in this specific release."
+    endif
+
+    appendInfoLine: "Please update to the latest version of Praat."
+    appendInfoLine: "Website: http://www.fon.hum.uva.nl/praat/"
+    exitScript()
 endif
 
 # Return to default preferences
