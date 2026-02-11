@@ -42,8 +42,8 @@ repeat
 		word: "Sound file extension", sound_file_extension$
 		comment: "Output:"
 		text: "Save_in", dst_dirname$
-		comment: "(*) In Filename format use these tags: [ID] [DuplicateID] [Filename] [Text]"
 		text: "Filename format", filename_format$
+		comment: "(*)Tags: [ID], [DuplicateID], [Filename] or [Text]"
 		comment: "Left and right margins (seconds)..."
 		real: "Margin", margin
 	clicked = endPause: "Standards", "Cancel", "Apply", "Ok", 4, 2

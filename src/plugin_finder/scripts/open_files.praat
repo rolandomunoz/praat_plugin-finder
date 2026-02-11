@@ -1,17 +1,20 @@
-# Open a TextGrid and optionally a Sound in the TextGridEditor
+#   open_files - Open a TextGrid and optionally a Sound in the TextGridEditor
+#   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
 #
-# Written by Rolando Munoz A. (08 Sep 2017)
-# Las modified on 24 Feb 2021
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-# This script is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
 #
-# A copy of the GNU General Public License is available at
-# <http://www.gnu.org/licenses/>.
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
-message$= ". (=same as each indexed TextGrid dirname)"
+message$= ". (= TextGrid parent folder)"
 cancel_btn = 1
 apply_btn = 2
 ok_btn = 3
@@ -19,30 +22,31 @@ ok_btn = 3
 repeat
 	@config.init: "../preferences.txt"
 	beginPause: "View & Edit files"
-		comment: "Folder with sound files:"
-		text: "sd_dirname", message$
+		text: 2, "Folder with sound files", message$
 		word: "Sound file extension", "wav"
-		boolean: "Folder path relative to indexed TextGrids", 1
+		boolean: "Path is relative to TextGrid location", 1
 		comment: "Display settings..."
 		real: "Margin", number(config.init.return$["open_file.margin"])
-		boolean: "Add notes", 0
-		boolean: "Adjust sound level", number(config.init.return$["open_file.adjust_sound_level"])
-	clicked = endPause: "Cancel", "Apply", "Ok", 3, 1
+		boolean: "Include notes", 0
+		boolean: "Maximize volume (Scale peak)", number(config.init.return$["open_file.adjust_sound_level"])
+	clicked = endPause: "Cancel", "Apply", "OK", 3, 1
 
 	if clicked = 1
 		exitScript()
 	endif
 
+	sd_dirname$ = folder_with_sound_files$
+
 	# Save in preferences
 	@config.set_value: "sounds_dir", sd_dirname$
 	@config.set_value: "open_file.margin", string$(margin)
-	@config.set_value: "open_file.adjust_sound_level", string$(adjust_sound_level)
+	@config.set_value: "open_file.adjust_sound_level", string$(maximize_volume)
 	@config.write
 
 	# Initial variables
 	sd_dirname$ = if sd_dirname$ == message$ then "." else sd_dirname$ fi
 	sd_ext$ = sound_file_extension$
-	relative_mode= folder_path_relative_to_indexed_TextGrids
+	relative_mode= path_is_relative_to_TextGrid_location
 	row = number(config.init.return$["open_file.row"])
 	pause = 1
 	table_dir$ = "../temp/search.Table"
@@ -72,7 +76,7 @@ repeat
 		tg_basename$ = basename.return$
 		@swap_extension: tg_basename$, sd_ext$
 		sd_basename$ = swap_extension.return$
-		
+
 		if relative_mode
 			sd_rel_dirname$ = sd_dirname$
 			@dirname: tg_path$
@@ -92,15 +96,15 @@ repeat
 		@getTierNumber
 		tier = getTierNumber.return[tier$]
 		sd = 0
-		
+
 		if fileReadable(sd_path$)
-			if adjust_sound_level
+			if maximize_volume
 				sd = Read from file: sd_path$
 				Scale peak: volume
-                show_volumne_widget = 1
+				show_volumne_widget = 1
 			else
 				sd = Open long sound file: sd_path$
-                show_volumne_widget = 0
+				show_volumne_widget = 0
 			endif
 			plusObject: tg
 		else
@@ -112,47 +116,47 @@ repeat
 		for i to tier - 1
 			Select next tier
 		endfor
-		
+
 		Select: tmin - margin, tmax + margin
 		Zoom to selection
 		Move cursor to: tmid
 
 		beginPause: "View & Edit files"
-			comment: "Case: 'row'/'n_rows'"
-			comment: "Text: " + if length(text$)> 25 then left$(text$, 25) + "..." else text$ fi
-			comment: "File name: " + tg_basename$
-			natural: "Next case",	if (row + 1) > n_rows then 1 else row + 1 fi
+			comment: "Item: 'row' of 'n_rows'"
+			comment: "Label: " + if length(text$)> 25 then left$(text$, 25) + "..." else text$ fi
+			comment: "File: " + tg_basename$
+			natural: "Go to item", if (row + 1) > n_rows then 1 else row + 1 fi
 			if show_volumne_widget
 				real: "Volume", volume
 			endif
-			if add_notes
+			if include_notes
 				sentence: "Notes", object$[search, row, "notes"]
 			endif
-		clicked_finder = endPause: "Continue", "Save", "Quit", 1, 3
+		clicked_finder = endPause: "Skip", "Save", "Quit", 1, 3
 		endeditor
 
-        if clicked_finder != 3
-            if add_notes
-                selectObject: search
-                Set string value: row, "notes", notes$
-                Save as text file: table_dir$
-            endif
-        endif
+		if clicked_finder != 3
+			if include_notes
+				selectObject: search
+				Set string value: row, "notes", notes$
+				Save as text file: table_dir$
+			endif
+		endif
 
 		if clicked_finder == 2
 			selectObject: tg
 			Save as text file: tg_path$
 		endif
-		
+
 		removeObject: tg
 		if sd
 			removeObject: sd
 		endif
 		@config.set_value: "open_file.row", string$(row)
 
-        if clicked_finder != 3
-            row = next_case
-        endif
+		if clicked_finder != 3
+			row = go_to_item
+		endif
 
 		if clicked_finder == 3
 			removeObject: search
