@@ -1,4 +1,4 @@
-temp/*
+src/plugin_finder/temp/*
 plugin_finder/*
 preferences.txt
 build
