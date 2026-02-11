@@ -1,12 +1,13 @@
 Finder Tutorial
 ===============
 
-Welcome! Finder is a Praat plug-in designed to work with TextGrid files.
-By using this plug-in, you can explore the content of your TextGrid files, create transcription
-reports, do audio extraction, edit your transcriptions and other stuffs.
+Welcome! Finder is a Praat plug-in designed to search and manage 
+annotations across multiple TextGrid files. Use this tool to explore
+your data, edit transcriptions, extract audio segments, and 
+generate reports.
 
-In this tutorial, I will guide you through the basics of this tool and bring some ideas about
-how to use the Finder in a linguistic project.
+In this tutorial, I will guide you through the basics and share ideas
+on how to integrate Finder into your linguistic projects.
 
 .. toctree::
    :maxdepth: 2
