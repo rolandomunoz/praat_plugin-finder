@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Introductory tutorial for new users
+
 ### Changed
 
 - `Create index...`: verify if input directory exists before running the command.
