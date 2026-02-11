@@ -27,7 +27,7 @@ repeat
 	@config.init: config_path$
 	beginPause: "Create index"
 		folder: "Folder with annotation files", config.init.return$["textgrids_dir"]
-		word: "Annotation file extension:", "TextGrid"
+		word: "Annotation file extension:", ".TextGrid"
 		boolean: "Include subfolders", number(config.init.return$["create_index.include_subfolders"])
 		boolean: "Keep empty intervals", number(config.init.return$["create_index.keep_empty_intervals"])
 		comment: "Next..."
