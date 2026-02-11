@@ -1,3 +1,19 @@
+#   create_index-dialog - Index TextGrid files into a Table object
+#   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+#
 form Create index
 	sentence TextGrid_directory C:\Users\lab\Desktop\phonetic-collection
 	word TextGrid_extension TextGrid
@@ -15,7 +31,7 @@ for i to size(fnames$#)
 endfor
 
 # List all the files in the root directory
-@createStringAsFileList: "fileList", textGrid_directory$ + "/*.'textGrid_extension$'", recursive_search
+@createStringAsFileList: "fileList", textGrid_directory$ + "/*'textGrid_extension$'", recursive_search
 files = selected("Strings")
 nfiles = Get number of strings
 if nfiles == 0
