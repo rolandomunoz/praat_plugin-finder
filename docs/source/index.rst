@@ -14,7 +14,7 @@ the diagram.
    digraph Flatland {
 
       "Index annotations" -> Select -> Tasks;
-      Tasks -> "View and Edit"
+      Tasks -> "View and Edit";
       Tasks -> "Extract files";
       Tasks -> "Reports";
       }
