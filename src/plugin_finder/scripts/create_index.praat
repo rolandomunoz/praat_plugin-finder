@@ -26,8 +26,8 @@ endform
 table_ext$ = "Table"
 fnames$# = fileNames$#("'destiny_directory$'/*.'table_ext$'")
 for i to size(fnames$#)
-	@join_many_paths: {destiny_directory$, fnames$#[i]}
-	deleteFile: join_many_paths.return$
+	@join_path: destiny_directory$, {fnames$#[i]}
+	deleteFile: join_path.return$
 endfor
 
 # List all the files in the root directory
@@ -55,11 +55,11 @@ repeat
 	for i from min to max
 		index+=1
 		tg_name$ = object$[files, i]
-		@join_many_paths: {textGrid_directory$, tg_name$}
-		@normpath: join_many_paths.return$
+		@join_path: textGrid_directory$, {tg_name$}
+		@normpath: join_path.return$
 		tg_path$ = normpath.return$
 
-	  tg = Read from file: tg_path$
+		tg = Read from file: tg_path$
 		tb = Down to Table: "no", 16, "yes", include_empty_intervals
 		Append column: "path"
 		Formula: "path", ~ tg_path$
@@ -86,8 +86,8 @@ removeObject: indexes#
 # Save index.Table
 selectObject: index
 Append column: "notes"
-@join_many_paths: {destiny_directory$, "index.Table"}
-Save as text file: join_many_paths.return$
+@join_path: destiny_directory$, {"index.Table"}
+Save as text file: join_path.return$
 
 # Save tier_summary.Table
 selectObject: index
@@ -99,8 +99,8 @@ Append column: "filename"
 invalid_characters$ = "[/\\:*?""<> \t\n]"
 Formula: "filename", ~string$(row) + "-" + replace_regex$(self$["tier"], invalid_characters$, "_", 0)
 
-@join_many_paths: {destiny_directory$, "tier_summary.Table"}
-Save as text file: join_many_paths.return$
+@join_path: destiny_directory$, {"tier_summary.Table"}
+Save as text file: join_path.return$
 
 # Save tier tables
 number_of_tiers = object[tb_tiers].nrow
@@ -112,8 +112,8 @@ for i to number_of_tiers
 	case[i]= object[tb_extracted_tier].nrow
 
 	tier_filename$ = object$[tb_tiers, i, "filename"]
-	@join_many_paths: {destiny_directory$, "index_'tier_filename$'.Table"}
-	Save as text file: join_many_paths.return$
+	@join_path: destiny_directory$, {"index_'tier_filename$'.Table"}
+	Save as text file: join_path.return$
 	removeObject: tb_extracted_tier
 endfor
 removeObject: tb_tiers, files, index
