@@ -1,14 +1,21 @@
-# Filter a search table
-#
-# Written by Rolando Munoz A. (15 Sep 2017)
-#
-# This script is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
 # A copy of the GNU General Public License is available at
 # <http://www.gnu.org/licenses/1>.
+#
+#   Filter - Filter a search table
+#   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 cancel_btn = 1
 apply_btn = 2
@@ -25,16 +32,14 @@ repeat
 
 	# Open the table containig all the tier names, then remove it before being displayed by the pause window
 	tb_all_tiers = Read from file: "../temp/tier_summary.Table"
-	n = Object_'tb_all_tiers'.nrow
-	for i to n
-		tier_name$[i]= object$[tb_all_tiers, i, "tier"]
-	endfor
+	tier_names$# = Get all texts in column: "tier"
+
 	removeObject: tb_all_tiers
 
 	beginPause: "Filter search"
 		optionMenu: "Tier name", number(config.init.return$["filter_search.tier_name_option"])
-		for i to n
-			option: tier_name$[i]
+		for i to size(tier_names$#)
+			option: tier_names$#[i]
 		endfor
 		sentence: "Search for (Regex)", config.init.return$["filter_search.search_for"]
 		comment: "If the search is successful, then..."
@@ -52,7 +57,6 @@ repeat
 	@config.set_value: "filter_search.tier_name_option", string$(tier_name)
 	@config.set_value: "filter_search.search_for", search_for$
 	@config.set_value: "filter_search.do", string$(do)
-	tier_name$ = tier_name$[tier_name]
 
 	for i to object[search].nrow
 		tg_path$ = object$[search, i, "path"]
