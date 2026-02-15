@@ -1,24 +1,29 @@
-# Extract files from a table
+#   extract_files - Extract files from a table
+#   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
 #
-# Written by Rolando Munoz A. (Aug 2017)
-# Las modified on 27 Feb 2021
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-# This script is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
 #
-# A copy of the GNU General Public License is available at
-# <http://www.gnu.org/licenses/1>.
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
-form Extract Sound & TextGrid
-	sentence sound_dirname .
-	word sound_extension wav
-	boolean relative_dirname 1
-	sentence search_table_path ../temp/search.Table
-	sentence dst_dirname C:\Users\lab\Desktop\test\folder_01-output
-	text name_format [Filename]-[DuplicateID]
-	real margin 0.1
+form: "Extract Sound & TextGrid"
+	sentence: "sound_dirname", "."
+	word: "sound_extension", ".wav"
+	optionmenu: "Path type", 2
+		option: "Relative to TextGrid location"
+		option: "Absolute path"
+	sentence: "search_table_path", "../temp/search.Table"
+	folder: "dst_dirname", "C:\Users\lab\Desktop\test\folder_01-output"
+	text: "name_format", "[Filename]-[DuplicateID]"
+	real: "margin", "0.1"
 endform
 
 # [ID], [DuplicateID], [Filename], [Text]
@@ -29,48 +34,67 @@ leading_zeros_default = 3
 leading_zeros = length(string$(nrows))
 leading_zeros = if leading_zeros_default > leading_zeros then leading_zeros_default else leading_zeros fi
 
-fileCounter= 0
+file_counter= 0
 for row to nrows
 	# Get audio and annotation files paths
 	tg_path$ = object$[search, row, "path"]
-	@get_pair_path: tg_path$, sound_extension$, sound_dirname$, relative_dirname
-	sd_path$ = get_pair_path.return$
-	@basename_without_extension: tg_path$
-	root_name$ = basename_without_extension.return$
-	
+
+	# Get sound path
+	sd_path$ = ""
+	if path_type == 1
+		# foo/abc.TextGrid -> foo
+		@dirname: tg_path$
+		tg_dir$ = dirname.return$
+
+		# /home/abc.TextGrid -> abc.wav
+		@stem_path: tg_path$
+		stem$ = stem_path.return$
+		sound_basename$ = stem$ + sound_extension$
+
+		@join_path: tg_dir$, {sound_dirname$, sound_basename$}
+		sd_path$ = join_path.return$
+	else
+		@stem_path: tg_path$, sound_extension$
+		@basename: stem_path.return$
+		sound_basename$ = basename.return$
+
+		@join_path: sound_dirname$, {sound_basename$}
+		sd_path$ = join_path.return$
+	endif
+
 	# Get matched text information
 	text$ = object$[search, row, "text"]
 	tmin = object[search, row, "tmin"]
 	tmax = object[search, row, "tmax"]
-	tmid = (tmax - tmin)*0.5 + tmin
- 
+	tmid = tmin + (tmax - tmin)/2
+
 	# Open one by one all files
 	if fileReadable(tg_path$) and fileReadable(sd_path$)
-		fileCounter+=1
-		
+		file_counter+=1
+
 		tg = Read from file: tg_path$
 		sd = Open long sound file: sd_path$
 
-		leftMargin = if (tmin-margin) > 0 then margin else tmin fi
-		rightMargin = if (object[sd].xmax - tmax) >= margin then margin else object[sd].xmax-tmax fi
-		
+		left_margin = if (tmin - margin) > 0 then margin else tmin fi
+		right_margin = if (object[sd].xmax - tmax) >= margin then margin else object[sd].xmax-tmax fi
+
 		## Extract TextGrid
 		selectObject: tg
 		tg_extracted = Extract part: tmin, tmax, "no"
-		nocheck Extend time: leftMargin, "Start"
-		nocheck Extend time: rightMargin, "End"
+		nocheck Extend time: left_margin, "Start"
+		nocheck Extend time: right_margin, "End"
 		Shift times to: "start time", 0
 
 		## Extract audio
 		selectObject: sd
-		sound_extensionracted = Extract part: tmin-leftMargin, tmax+rightMargin, "no"
+		sd_extracted = Extract part: tmin - left_margin, tmax + right_margin, "no"
 
 		# File names
-		@zfill: string$(fileCounter), leading_zeros
-		numericID$ = zfill.return$
-		
-		new_name$ = replace$(name_format$, "[ID]", numericID$, 0)
-		new_name$ = replace$(new_name$, "[Filename]", root_name$, 0)
+		@zfill: string$(file_counter), leading_zeros
+		numeric_id$ = zfill.return$
+
+		new_name$ = replace$(name_format$, "[ID]", numeric_id$, 0)
+		new_name$ = replace$(new_name$, "[Filename]", stem$, 0)
 		new_name$ = replace$(new_name$, "[Text]", text$, 0)
 
 		if index(new_name$, "[DuplicateID]")
@@ -80,33 +104,39 @@ for row to nrows
 				@zfill: string$(repetitionID), leading_zeros
 				repetitionID$ = zfill.return$
 				new_name_test$= replace$(new_name$, "[DuplicateID]", repetitionID$, 0)
-				new_tg_path$ = dst_dirname$ + "/" + new_name_test$ + ".TextGrid"
-			until !fileReadable(new_tg_path$)
+				tg_path_dst$ = dst_dirname$ + "/" + new_name_test$ + ".TextGrid"
+			until !fileReadable(tg_path_dst$)
 		else
-			new_tg_path$ = dst_dirname$ + "/" + new_name$ + ".TextGrid"
+			tg_path_dst$ = dst_dirname$ + "/" + new_name$ + ".TextGrid"
 		endif
-		
-		@dirname: new_tg_path$
-		@make_dirs: dirname.return$
-		
-		# Save files
-		selectObject: sound_extensionracted
-		
-		@swap_extension: new_tg_path$, "wav"
-		new_sd_path$ = swap_extension.return$
 
-		Save as WAV file: new_sd_path$
+		# Create the destination directory for the TextGrid and audio files.
+		# Because the output format allows for user-defined subfolders (via slashes
+		# and tags), this code automatically generates the necessary directory
+		# tree. This provides the flexibility to organize data across multiple
+		# nested subdirectories.
+		@dirname: tg_path_dst$
+		tg_dirname_dst$ = dirname.return$
+		@make_dir: tg_dirname_dst$
+
+		# Save files
+		selectObject: sd_extracted
+
+		@swap_extension: tg_path_dst$, sound_extension$
+		sd_path_dst$ = swap_extension.return$
+
+		Save as WAV file: sd_path_dst$
 		selectObject: tg_extracted
-		Save as text file: new_tg_path$
-		removeObject: tg, tg_extracted, sd, sound_extensionracted
+		Save as text file: tg_path_dst$
+		removeObject: tg, tg_extracted, sd, sd_extracted
 	endif
 endfor
 
 removeObject: search
 writeInfoLine: "Extract Sound & TextGrid"
-appendInfoLine: "Number of extracted files: ", fileCounter * 2
-appendInfoLine: "- Annotation files: ", fileCounter
-appendInfoLine: "- Sound files: ", fileCounter
+appendInfoLine: "Number of extracted files: ", file_counter * 2
+appendInfoLine: "- Annotation files: ", file_counter
+appendInfoLine: "- Sound files: ", file_counter
 
 procedure zfill: .number$, .width
 	.digits = length(.number$)
