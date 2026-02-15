@@ -13,7 +13,7 @@ the diagram.
 
    digraph Flatland {
 
-      "Index annotations" -> Select -> Tasks;
+      "Index TextGrids" -> Search -> Tasks;
       Tasks -> "View and Edit";
       Tasks -> "Extract files";
       Tasks -> "Reports";
@@ -42,7 +42,6 @@ on how to integrate Finder into your linguistic projects.
    :maxdepth: 2
    :caption: Tutorial:
 
-   requirements
    installation
    01-create_index
    02-search
