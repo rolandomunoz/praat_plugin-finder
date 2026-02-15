@@ -1,37 +1,42 @@
 Step 1: Indexing TextGrids
 --------------------------
 
-Indexing your TextGrid files is the first step to do before any task. This consists in telling
-the plug-in where the annotation files are. By doing so, Praat will look for all
-TextGrid files under a certain directory and will index their content internally.
+Indexing TextGrid files is the starting point for this plug-in.
+When running this operation, Praat will read the TextGrid files in a 
+directory and store their content into tables. These tables are used 
+internally by the plug-in when searching for data.
 
-First, let's start by indexing the TextGrids in the folder ``tutorial/vowels/speaker_001``
-of the **example files**. In :numref:`speaker_001-folder` there is a screenshot of that folder.
+Create an index
+~~~~~~~~~~~~~~~
+
+In the following example we will index the TextGrid files in the folder
+``ling_data`` (:numref:`speaker_001-folder`).
 
 .. _speaker_001-folder:
 
-.. figure:: img/speaker_001-folder.png
+.. figure:: img/example1-folder.png
    :align: center
 
    A folder containing the audio and TextGrid files to be indexed.
 
-To index the said folder, go to the ``Finder > Create index...`` command. When you click on it,
-a window as in :numref:`index_window` pops up. In the field
-``Folder with annotation files`` provide the directory of the folder in your machine.
-Leave the other options as in :numref:`index_window` and press on ``Ok``.
+To index this folder, go to the ``Finder > Create index...`` command.
+When you click it, a window pops up as shown in :numref:`index_window`.
+In the field ``Folder with annotation files`` provide the directory on
+your computer. Leave the other options as in :numref:`index_window` 
+and click ``Ok``.
 
 .. _index_window:
 
-.. figure:: img/index_window.png
+.. figure:: img/index_ui_dialog.png
    :align: center
 
    The ``Create index...`` window
 
-When the index is done, the ``Praat Info`` window will show the message in
-:numref:`index-result_window`. The message lists all the tiers that where
-found in your TextGrids and the sum of the number of transcribed items
-(``intervals`` or ``points``) for each case. For example, the tier ``segment``
-contains 20 labels in total.
+Once the indexing is complete, the ``Praat Info`` window will display a
+message like the one in :numref:`index-result_window`. The message lists all
+the tiers grouped by name across your TextGrid files and the total number
+of transcribed items (``intervals`` or ``points``) for each one. For
+example, the tier ``vowels`` contains 12 labels in total.
 
 .. _index-result_window:
 
@@ -42,38 +47,13 @@ contains 20 labels in total.
 
 .. _TextGrids in subfolders:
 
-Index subfolders
-~~~~~~~~~~~~~~~~
-It is common that TextGrid files are stored in various subfolders under a directory.
-To index those files, check the ``Process subfolders as well`` of the ``Create index`` window
-(see :numref:`index_window`).
-
-For this example, we will index the TextGrid files in the folder ``tutorial/vowels`` of the
-**examples files**. These TextGrids are organized in subfolders for each speaker.
-
-First, let's identify the directory that contains the subfolders with the target files.
-In my computer, the directory is ``C:\Users\rolan\Desktop\spanish_vowels`` as you
-can see in the :numref:`corpus_for_spanish_vowel-folder`.
-
-.. _corpus_for_spanish_vowel-folder:
-
-.. figure:: img/corpus_for_spanish_vowels-folder.png
-   :align: center
-
-   The directory containing the subfolders with the TextGrid files in the ``vowels`` folder.
-
-Once you have the directory path, copy it and open the ``Create index`` window.
-Fill up the window with the copied path and check the ``Process subfolders as well``
-option. Your window should looks similar to :numref:`index_window2`.
-
-.. _index_window2:
-
-.. figure:: img/index_window2.png
-   :align: center
-
-   The ``Create index...`` window
-
-After pressing on ``Ok``, you should have the message in :numref:`index-result_window2`
+Include subfolders
+~~~~~~~~~~~~~~~~~~
+In the previous case, only the files in the main directory were indexed.
+To include TextGrids within subfolders (such as ``tmp`` and ``tmp2``),
+check the ``Include subfolders`` option. As shown in 
+:numref:`index-result_window2`,  the results are now different from the
+previous example because more TextGrid files were included.
 
 .. _index-result_window2:
 
@@ -82,4 +62,39 @@ After pressing on ``Ok``, you should have the message in :numref:`index-result_w
 
    The ``Praat Info`` window showing the indexing results
 
-Now you are ready to for :doc:`02-search`.
+FAQ
+~~~
+
+**Do I need to index my files each time Praat starts?**
+
+    No. The plug-in stores the indexed information on the folder
+    ``temp`` within the plug-in folder. This folder is managed
+    automatically, so your data remains available and ready for use
+    every time you start Praat.
+ 
+**When is it necessary to index files again?**
+
+    You should create a new index whenever your annotation 
+    files are modified or updated.
+
+**Is there a limit to the number of TextGrids I can index?**
+
+    There is no hard limit; however, the time required to create the
+    index will increase with the number and size of your files.
+    For very large datasets, we recommend indexing only the folders
+    necessary for your current analysis.
+
+**Does indexing modify my original TextGrid files?**
+
+    No. The plug-in only reads your files to extract information.
+    Your original TextGrid files remain untouched and are never
+    modified by the indexing process.
+
+**What happens if I move my folder to a different location on my computer?**
+
+    If you move your annotation folder, the plug-in will no longer be
+    able to locate the files. In this case, you simply need to
+    run the ``Create index...`` command again and provide the new folder
+    path.
+
+Now you are ready for :doc:`02-search`.
