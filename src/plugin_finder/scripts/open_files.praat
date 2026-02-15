@@ -14,17 +14,23 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
-message$= ". (= TextGrid parent folder)"
+message$= ". (= TextGrid location)"
+sd_dirname$ = "."
 cancel_btn = 1
 apply_btn = 2
 ok_btn = 3
+sound_path = 1
+sd_ext$ = ".wav"
 
 repeat
 	@config.init: "../preferences.txt"
 	beginPause: "View & Edit files"
-		text: 2, "Folder with sound files", message$
-		word: "Sound file extension", "wav"
-		boolean: "Path is relative to TextGrid location", 1
+		sd_dirname$ = if sd_dirname$ == "." then message$ else sd_dirname$ fi
+		text: 2, "Folder with sound files", sd_dirname$
+		optionMenu: "Sound path", sound_path
+			option: "Relative to TextGrid location"
+			option: "Absolute path"
+		word: "Sound file extension", sd_ext$
 		comment: "Display settings..."
 		real: "Margin", number(config.init.return$["open_file.margin"])
 		boolean: "Include notes", 0
@@ -35,18 +41,16 @@ repeat
 		exitScript()
 	endif
 
-	sd_dirname$ = folder_with_sound_files$
-
 	# Save in preferences
-	@config.set_value: "sounds_dir", sd_dirname$
 	@config.set_value: "open_file.margin", string$(margin)
 	@config.set_value: "open_file.adjust_sound_level", string$(maximize_volume)
 	@config.write
 
 	# Initial variables
+	sd_dirname$ = folder_with_sound_files$
 	sd_dirname$ = if sd_dirname$ == message$ then "." else sd_dirname$ fi
 	sd_ext$ = sound_file_extension$
-	relative_mode= path_is_relative_to_TextGrid_location
+	relative_mode = sound_path
 	row = number(config.init.return$["open_file.row"])
 	pause = 1
 	table_dir$ = "../temp/search.Table"
@@ -74,15 +78,16 @@ repeat
 		tg_path$ = object$[search, row, "path"]
 		@basename: tg_path$
 		tg_basename$ = basename.return$
-		@swap_extension: tg_basename$, sd_ext$
-		sd_basename$ = swap_extension.return$
+		@with_suffix: tg_basename$, sd_ext$
+		sd_basename$ = with_suffix.return$
 
-		if relative_mode
+		if relative_mode == 1
 			sd_rel_dirname$ = sd_dirname$
 			@dirname: tg_path$
 			@join_many_paths: {dirname.return$, sd_rel_dirname$, sd_basename$}
 			sd_path$ =join_many_paths.return$
 		else
+			# Absolute path
 			@join_many_paths: {sd_dirname$, sd_basename$}
 			sd_path$ = join_many_paths.return$
 		endif
@@ -130,7 +135,7 @@ repeat
 				real: "Volume", volume
 			endif
 			if include_notes
-				sentence: "Notes", object$[search, row, "notes"]
+				text: 2, "Notes", object$[search, row, "notes"]
 			endif
 		clicked_finder = endPause: "Skip", "Save", "Quit", 1, 3
 		endeditor
