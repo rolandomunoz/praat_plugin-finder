@@ -1,11 +1,9 @@
 Installation
 ------------
 
-You can get the latest release of the plug-in in the following `link`_. By clicking on it,
-you will be redirected to a GitHub website as shown in :numref:`github-download`.
-
-In the website, go to the **Assets** section and click on any of the two links: ``Source code (zip)`` or
-``Source code (tar.gz)``. By doing this, a compressed folder will be downloaded.
+**Step 1.** Get the latest version of the plug-in at the following `link`_.
+On the website, navigate to the **Assets** section and download the ZIP
+file ``plugin_finder.zip``.
 
 .. _github-download:
 
@@ -14,47 +12,80 @@ In the website, go to the **Assets** section and click on any of the two links: 
 
    Download section on GitHub
 
-Once the download is finished, uncompress the folder. Then, copy the uncompressed folder to the Praat
-**preferences folder**. This is a directory created when you run Praat on your machine for the first
-time. According to the Praat
-manual, the **preferences folder** can be found in one of following directories depending on your
-operating system:
+**Step 2.** Unzip the file to extract the plugin folder. Copy this folder into the
+Praat **preferences folder**. This is a directory created after you run
+Praat for the first time on your computer and its location depends on
+your operating system.
 
-* On Windows, ``C:\Users\your user name\Praat\``
-* On Mac, ``/Users/your user name/Library/Preferences/Praat Prefs/``
-* On Linux, ``/home/your user name/.praat-dir/``
+.. tab-set::
 
-In the :numref:`win-praat_preferences` there is a screenshot of the **preferences folder** in a computer with Windows 10. As you can see, the plug-in folder is also copied to this directory. In the :numref:`plugin_folder` there is a view of the plug-in folder.
+    .. tab-item:: Windows
+        :sync: windows
 
-.. _win-praat_preferences:
+        On Windows, the **preference folder** is located at 
+        ``C:\Users\[user name]\Praat``. In the :numref:`praat_preferences-win`,
+        the plug-in folder has been copied to that directory.
 
-.. figure:: img/win-praat_preferences.png
-   :align: center
+        .. _praat_preferences-win:
 
-   The **Praat Preferences** directory on Windows 10
+        .. figure:: img/praat_preferences-win.png
+           :align: center
 
-.. _plugin_folder:
+           The **Praat Preferences** directory on Windows 10
 
-.. figure:: img/plugin_folder.png
-   :align: center
-   
-   The plug-in folder
+        Within the plug-in folder you should have the following content.
 
-.. warning:: When uncompressing the downloaded folder, some tools put the plug-in folder within another folder.
-   If this is your case, copy only the subfolder to the `preferences folder`. You can check it by looking at the
-   `setup.praat` file. The plug-in folder contains this file just under it.
+        .. _plugin_folder_win:
 
-.. warning:: If you rename the plug-in's folder, do not remove the preffix `plugin`. This word is
-   necessary for Praat to recognize the plug-in.
+        .. figure:: img/plugin_folder-win.png
+           :align: center
+           
+           The plug-in folder
 
-Finally, check that Praat can recognize the plug-in. Start Praat and go to ``Praat > Goodies`` in the menu bar. There, you should
-be able to see the ``Finder`` submenu as in the :numref:`plugin_menu`.
+    .. tab-item:: macOS
+        :sync: macos
 
-.. _plugin_menu:
+        On Mac, the **preference folder** is located at 
+        ``/Users/your user name/Library/Preferences/Praat Prefs/``. 
 
-.. figure:: img/finder_menu.png
-   :align: center
-   
-   The plug-in menu
+        .. note::
+            The ``Library`` folder is hidden by default on macOS. To 
+            find it, open **Finder**, click the **Go** menu while holding
+            the **Option (Alt)** key, and select **Library**.
 
-.. _link: https://github.com/rolandomunoz/plugin_finder/releases/latest
+    .. tab-item:: Linux
+        :sync: linux
+
+        On Linux, the **preference folder** it is located at
+        ``/home/your user name/.praat-dir/``. In the 
+        :numref:`praat_preferences-linux`, the plug-in folder has
+        already been copied to that directory.
+
+        .. _praat_preferences-linux:
+
+        .. figure:: img/praat_preferences-linux.png
+           :align: center
+
+           The **Praat Preferences** directory on Linux (Debian 13)
+
+        Within the plug-in folder you should have the following content.
+
+        .. _plugin_folder_linux:
+
+        .. figure:: img/plugin_folder-linux.png
+           :align: center
+           
+           The plug-in folder
+
+**Step 3.** Finally, check that Praat can recognize the plug-in. Start Praat and
+go to ``Praat > Goodies`` in the menu bar. There, you should
+be able to see the ``Finder`` submenu as shown in :numref:`plugin_menu`.
+
+    .. _plugin_menu:
+
+    .. figure:: img/finder_menu.png
+       :align: center
+       
+       The plug-in menu
+
+    .. _link: https://github.com/rolandomunoz/plugin_finder/releases/latest
