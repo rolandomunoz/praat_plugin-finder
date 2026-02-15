@@ -71,7 +71,7 @@ repeat
 	selectObject: tables#
 	new_table = Append
 	indexes#[group_counter] = new_table
-	
+
 	removeObject: tables#
 
 	min = max + 1
@@ -92,18 +92,27 @@ Save as text file: join_many_paths.return$
 # Save tier_summary.Table
 selectObject: index
 tb_tiers = Collapse rows: "tier", "", "", "", "", ""
+
+## Tier names could have invalid characters for filenames, create
+## a new column with the normalized filenames.
+Append column: "filename"
+invalid_characters$ = "[/\\:*?""<> \t\n]"
+Formula: "filename", ~string$(row) + "-" + replace_regex$(self$["tier"], invalid_characters$, "_", 0)
+
 @join_many_paths: {destiny_directory$, "tier_summary.Table"}
 Save as text file: join_many_paths.return$
 
 # Save tier tables
 number_of_tiers = object[tb_tiers].nrow
 for i to number_of_tiers
-	tier_name$= object$[tb_tiers, i, "tier"]
+	tier_name$ = object$[tb_tiers, i, "tier"]
 	selectObject: index
 	tb_extracted_tier = Extract rows where column (text): "tier", "is equal to", tier_name$
 	case$[i]= tier_name$
 	case[i]= object[tb_extracted_tier].nrow
-	@join_many_paths: {destiny_directory$, "index_'tier_name$'.Table"}
+
+	tier_filename$ = object$[tb_tiers, i, "filename"]
+	@join_many_paths: {destiny_directory$, "index_'tier_filename$'.Table"}
 	Save as text file: join_many_paths.return$
 	removeObject: tb_extracted_tier
 endfor
