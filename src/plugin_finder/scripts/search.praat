@@ -62,7 +62,7 @@ repeat
 			option: "contains a word ending with"
 			option: "does not contain a word ending with"
 			option: "matches (regex)"
-			comment: "If the search is successful, then..."
+			comment: "Next..."
 		optionMenu: "Action", number(config.init.return$["search.do"])
 			option: ""
 			option: "View & Edit files..."
