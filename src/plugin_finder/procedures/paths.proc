@@ -17,24 +17,38 @@
 #   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 procedure make_dir: .path$
-	clearinfo
-    @iterate_path: .path$
+	@iterate_path: .path$
 	for .i to size(iterate_path.return$#)
 	    .path$= iterate_path.return$#[.i]
             if .i != 1
-				appendInfoLine: .path$
-				#createDirectory(.path$)
+				.path$ = "/" + .path$
+				createDirectory(.path$)
             endif
 	endfor
+	writeInfoLine: "adssas"
 endproc
 
 
 procedure iterate_path: .path$
 	.objects# = selected#()
 	@unixpath: .path$
+
+	# We split the path by "/". Praat's 'Strings' object treats the
+    # leading "/" as a delimiter, often omitting the root from the
+    # first token.
 	.str = Create Strings from tokens: "dirnames", unixpath.return$, "/"
 	.nstrings = Get number of strings
+
+	# If the original path was absolute (started with "/"), we manually
+    # prepend the slash back to the first directory name to maintain
+    # the root.
+	if startsWith(unixpath.return$, "/") and .nstrings > 0
+		.str$ = Get string: 1
+		Set string: 1, "/" + .str$
+	endif
+
 	.dirnames$# = empty$#(.nstrings)
+
 	for .i to .nstrings
 		.name$ = object$[.str, .i]
 		if .i == 1
@@ -43,6 +57,8 @@ procedure iterate_path: .path$
 			.dirnames$#[.i] = .dirnames$#[.i-1] + "/" + .name$
 		endif
 	endfor
+
+	# Clean up the temporary Strings object and restore selection
 	removeObject: .str
 	selectObject: .objects#
 	.return$# = .dirnames$#
@@ -130,7 +146,7 @@ endproc
 procedure split_path: .path$
 	# Split the pathname path into a pair, (head, tail) where tail is
 	# the last pathname component and head is everything leading up to
-	# that. The tail part will never contain a slash; if path ends in 
+	# that. The tail part will never contain a slash; if path ends in
 	# a slash, tail will be empty.
 	#
 	# Paremeters
