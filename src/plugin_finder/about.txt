@@ -1,12 +1,12 @@
 Plugin: Finder
 Author: Rolando Muñoz A. <rolando.ma@hotmail.com>
-Homepage: https://rolandomunoz.github.io/finder_main.html 
-Version: 2.3.2
-Last modified: 2025-08-11
+Homepage: https://github.com/rolandomunoz/praat_plugin-finder
+Documentation: https://plugin-finder.readthedocs.io/en/latest/
+Version: 2.4.0
+Last modified: 2026-02-16
 Description:
   - A tool search for TextGrid files. Once a label is match, do some actions.
 Depends:
-  - Praat: 6.1.39+
-License: GPL3
-How to cite: 
- - Muñoz Aramburú, R. (2025). Finder[Praat plug-in]. Version 2.3.2, retrived 11 August 2025 from https://github.com/rolandomunoz/praat-finder
+  - Praat: 6.4.06+
+License: GNU/GPLv3
+License link: https://www.gnu.org/licenses/gpl-3.0.en.html
