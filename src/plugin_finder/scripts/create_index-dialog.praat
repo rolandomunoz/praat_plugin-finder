@@ -82,5 +82,4 @@ until clicked == ok_btn
 
 include ../procedures/config.proc
 include ../procedures/list_recursive_path.proc
-include ../procedures/paths.proc
 include _warning_dialogs.praat
