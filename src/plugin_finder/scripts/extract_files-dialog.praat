@@ -25,9 +25,10 @@ ok_btn = 4
 repeat
 	if defaults
 		sound_dirname$ = "."
-		sound_path = 1
+		sound_dirname_msg$ = ". (= TextGrid location)"
+		path_type = 1
 		dst_dirname$ = ""
-		sound_file_extension$ = "wav"
+		sound_file_extension$ = ".wav"
 		filename_format$ = "[Filename]-[DuplicateID]"
 		margin = 0.1
 		defaults = 0
@@ -35,15 +36,16 @@ repeat
 
 	beginPause: "Extract files"
 		comment: "Input:"
-		text: "Folder with sound files", sound_dirname$
-		optionMenu: "Sound path", sound_path
-			option: "Relative to TextGrid paths"
+		sound_dirname$ = if sound_dirname$ == "." then sound_dirname_msg$ else sound_dirname$ fi
+		text: 2, "Folder with sound files", sound_dirname$
+		optionMenu: "Path type", path_type
+			option: "Relative to TextGrid location"
 			option: "Absolute path"
 		word: "Sound file extension", sound_file_extension$
 		comment: "Output:"
-		text: "Save_in", dst_dirname$
-		text: "Filename format", filename_format$
-		comment: "(*)Tags: [ID], [DuplicateID], [Filename] or [Text]"
+		folder: "Save_in", dst_dirname$
+		text: 2, "Filename format", filename_format$
+		comment: "(*) Tags: [ID], [DuplicateID], [Filename] or [Text]"
 		comment: "Left and right margins (seconds)..."
 		real: "Margin", margin
 	clicked = endPause: "Standards", "Cancel", "Apply", "Ok", 4, 2
@@ -58,11 +60,12 @@ repeat
 
 	if clicked == ok_btn or clicked == apply_btn
 		# Rename variables
-		sound_dirname$ = folder_with_sound_files$
+		if sound_dirname$ == sound_dirname_msg$
+			sound_dirname$ = "."
+		endif
 		dst_dirname$ = save_in$
 	
 		# Variables
-		relative_dirname = if sound_path > 1 then 0 else 1 fi
 		# Check dialog
 		check_counter = 0
 
@@ -73,7 +76,9 @@ repeat
 		check_counter = if check_if_empty.return then check_counter else check_counter+1 fi
 		
 		if check_counter == 2
-			runScript: "extract_files.praat", sound_dirname$, sound_file_extension$, relative_dirname, search_table_path$, dst_dirname$, filename_format$, margin
+			runScript: "extract_files.praat", sound_dirname$,
+			... sound_file_extension$, path_type$, search_table_path$,
+			... dst_dirname$, filename_format$, margin
 		endif
 	endif
 until clicked == 4
