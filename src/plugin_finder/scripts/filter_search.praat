@@ -1,6 +1,3 @@
-# A copy of the GNU General Public License is available at
-# <http://www.gnu.org/licenses/1>.
-#
 #   Filter - Filter a search table
 #   Copyright (C) 2017-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
 #
@@ -42,13 +39,13 @@ repeat
 			option: tier_names$#[i]
 		endfor
 		sentence: "Search for (Regex)", config.init.return$["filter_search.search_for"]
-		comment: "If the search is successful, then..."
-		optionMenu: "Do", number(config.init.return$["filter_search.do"])
+		comment: "Next..."
+		optionMenu: "Action", number(config.init.return$["filter_search.do"])
 			option: "Nothing"
 			option: "View & Edit files..."
 			option: "Extract files..."
 			option: "Filter search..."
-	clicked = endPause: "Cancel", "Apply", "Ok", 3, 1
+	clicked = endPause: "Cancel", "Apply", "OK", 3, 1
 
 	if clicked = cancel_btn
 		exitScript()
@@ -56,7 +53,7 @@ repeat
 
 	@config.set_value: "filter_search.tier_name_option", string$(tier_name)
 	@config.set_value: "filter_search.search_for", search_for$
-	@config.set_value: "filter_search.do", string$(do)
+	@config.set_value: "filter_search.do", string$(action)
 
 	for i to object[search].nrow
 		tg_path$ = object$[search, i, "path"]
@@ -95,8 +92,8 @@ repeat
 		removeObject: search_extracted
 		
 		scriptName$# = {"", "open_files.praat", "extract_files-dialog.praat", "filter_search.praat"}
-		if do > 1
-			runScript: scriptName$#[do]
+		if action > 1
+			runScript: scriptName$#[action]
 		endif
 	endif
 until clicked == ok_btn
