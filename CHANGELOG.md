@@ -9,16 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `Create index...`: Improved character handling in tier names to prevent
+- `Create index`: Improved character handling in tier names to prevent
 	crashes and support special characters (`/\:*?"<>`) and 
 	whitespace (`\t\n`).
 
 ### Changed
 
 - Update documentation website.
-- `Create index...`: verify if input directory exists before running the command.
-- `Create index...`: Use `folder` type instead of `text` in  the TextGrid directory field.
-- `Extract files...`: Use `folder` type instead of `text` in 'Save in' field.
+- `Create index`: verify if input directory exists before running th
+	command.
+- `Create index`: Use `folder` type instead of `text` in  the TextGrid
+	directory field.
+- `Extract files`: Use `folder` type instead of `text` in 'Save in' field.
+- `View & Edit files`: Replaced the boolean field with an option menu
+	for selecting between relative and absolute sound paths
 - UI: Refined dialog labels for better clarity.
 
 ## [v2.3.1] - 2025-08-11
