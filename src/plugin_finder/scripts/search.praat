@@ -19,7 +19,7 @@ cancel_btn = 1
 apply_btn = 2
 ok_btn = 3
 
-config_path$ = "../preferences.txt" 
+config_path$ = "../preferences.txt"
 index_table_path$ =  "../temp/index.Table"
 tier_table_path$ = "../temp/tier_summary.Table"
 
@@ -32,10 +32,9 @@ if not fileReadable(index_table_path$)
 endif
 
 tb_all_tiers = Read from file: tier_table_path$
-number_of_rows = object[tb_all_tiers].nrow
-for i to number_of_rows
-	tier_name$[i]= object$[tb_all_tiers, i, "tier"]
-endfor
+tier_names$# = Get all texts in column: "tier"
+tier_filenames$# = Get all texts in column: "filename"
+
 removeObject: tb_all_tiers
 
 selectObject: temp_object#
@@ -43,8 +42,8 @@ repeat
 	@config.init: config_path$
 	beginPause: "Search"
 		optionMenu: "Tier name", number(config.init.return$["search.tier_name_option"])
-			for i to number_of_rows
-				option: tier_name$[i]
+			for i to size(tier_names$#)
+				option: tier_names$#[i]
 			endfor
 		sentence: "Search for", config.init.return$["search.search_for"]
 		optionMenu: "Mode", number(config.init.return$["search.mode"])
@@ -69,14 +68,14 @@ repeat
 			option: "View & Edit files..."
 			option: "Extract files..."
 			option: "Filter search..."
-			option: "Search report"	
+			option: "Search report"
 			option: "Frequency report"
 	clicked = endPause: "Cancel", "Apply", "OK", 3, 1
 
 	if clicked == cancel_btn
 		exitScript()
 	endif
-	
+
 	@config.set_value: "search.tier_name_option", string$(tier_name)
 	@config.set_value: "search.search_for", search_for$
 	@config.set_value: "search.mode", string$(mode)
@@ -85,7 +84,7 @@ repeat
 	@config.write
 
 	# Make a search
-	table_basename$ = "index_" + tier_name$[tier_name] + ".Table"
+	table_basename$ = "index_" + tier_filenames$#[tier_name] + ".Table"
 	table_path$ = "../temp/'table_basename$'"
 	tb_tier = Read from file: table_path$
 	tb_search = nowarn Extract rows where column (text): "text", mode$, search_for$
@@ -98,7 +97,7 @@ repeat
 	appendInfoLine: "Search for: ", search_for$
 	appendInfoLine: "Tier name: ", tier_name$
 	appendInfoLine: "Total number of occurrences: ", n_cases
-	
+
 	# Action
 	if n_cases
 		selectObject: tb_search
