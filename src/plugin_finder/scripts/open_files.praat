@@ -33,7 +33,7 @@ repeat
 		word: "Sound file extension", sd_ext$
 		comment: "Display settings..."
 		real: "Margin", number(config.init.return$["open_file.margin"])
-		boolean: "Include notes", 0
+		boolean: "Include notes", number(config.init.return$["open_file.include_notes"])
 		boolean: "Maximize volume (Scale peak)", number(config.init.return$["open_file.adjust_sound_level"])
 	clicked = endPause: "Cancel", "Apply", "OK", 3, 1
 
@@ -44,6 +44,7 @@ repeat
 	# Save in preferences
 	@config.set_value: "open_file.margin", string$(margin)
 	@config.set_value: "open_file.adjust_sound_level", string$(maximize_volume)
+	@config.set_value: "open_file.include_notes", string$(include_notes)
 	@config.write
 
 	# Initial variables
@@ -78,18 +79,18 @@ repeat
 		tg_path$ = object$[search, row, "path"]
 		@basename: tg_path$
 		tg_basename$ = basename.return$
-		@with_suffix: tg_basename$, sd_ext$
-		sd_basename$ = with_suffix.return$
+		@swap_extension: tg_basename$, sd_ext$
+		sd_basename$ = swap_extension.return$
 
 		if relative_mode == 1
 			sd_rel_dirname$ = sd_dirname$
 			@dirname: tg_path$
-			@join_many_paths: {dirname.return$, sd_rel_dirname$, sd_basename$}
-			sd_path$ =join_many_paths.return$
+			@join_path: dirname.return$, {sd_rel_dirname$, sd_basename$}
+			sd_path$ =join_path.return$
 		else
 			# Absolute path
-			@join_many_paths: {sd_dirname$, sd_basename$}
-			sd_path$ = join_many_paths.return$
+			@join_path: sd_dirname$, {sd_basename$}
+			sd_path$ = join_path.return$
 		endif
 		tmin = object[search, row, "tmin"]
 		tmax = object[search, row, "tmax"]
