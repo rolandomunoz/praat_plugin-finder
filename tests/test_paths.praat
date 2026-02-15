@@ -59,7 +59,7 @@ results_ext$# = {
 
 for i to size(paths$#)
 	@splitext_path: paths$#[i]
-	assert splitext_path.return$#[2] == results_ext$#[i]	
+	assert splitext_path.return$#[2] == results_ext$#[i]
 endfor
 
 
@@ -102,10 +102,11 @@ assert join_path.return$ == "/home/abc/dbc/abc.txt"
 @join_path: "D:\\", {"Users", "abc.txt"}
 assert join_path.return$ == "D:/Users/abc.txt"
 
-# Test: @join_path
 @join_path: "/home/", {"abc", "////dbc", "abc.txt"}
 assert join_path.return$ == "/home/abc/dbc/abc.txt"
 
+@join_path: "/home/", {"abc", "////dbc", "abc.txt"}
+assert join_path.return$ == "/home/abc/dbc/abc.txt"
 
 # Test: @stem_path
 @stem_path: "abc.txt"
@@ -117,6 +118,10 @@ assert stem_path.return$ == "abc"
 @stem_path: "/home/foo/abc.txt/"
 assert stem_path.return$ == ""
 
-@make_dir: "/home/rolando/Documents/praat_plugins/praat_plugin-finder/tests/data_output/"
+#dst_dir$ ="/home/rolando/Documents/praat_plugins/praat_plugin-finder/tests/data_output/example/speaker"
+#@iterate_path: dst_dir$
+
+@make_dir: dst_dir$
+assert folderExists(dst_dir$) == 1
 
 include ../src/plugin_finder/procedures/paths.proc
