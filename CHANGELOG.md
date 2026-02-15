@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	crashes and support special characters (`/\:*?"<>`) and 
 	whitespace (`\t\n`).
 
+- `Extract files`: Fixed a bug on Linux and macOS where absolute paths
+	were incorrectly treated as relative, preventing file extraction
+	to specified destination folders.
+
 ### Changed
 
 - Update documentation website.
