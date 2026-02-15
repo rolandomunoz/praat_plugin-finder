@@ -1,14 +1,21 @@
-# Some common operation with paths. It is inspired in os.path package from python
+#   paths.proc - A set of procedures related to paths. It is inspired in
+#				 Python packages os.path and pathlib.
 #
-# Written by Rolando Munoz A. (23 Feb 2020)
-# This script is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#   Copyright (C) 2020-2026 Rolando Muñoz A. <rolando.muar@gmail.com>
 #
-# A copy of the GNU General Public License is available at
-# <http://www.gnu.org/licenses/>.
-
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+#
 procedure make_dirs: .path$
     @iterate_path: .path$
 	for .i to size(iterate_path.return$#)
@@ -44,10 +51,35 @@ procedure basename_without_extension: .path$
 	.return$ = splitext_path.return$#[1]
 endproc
 
+# Dreprecated: use with_suffix instead
 procedure swap_extension: .path$, .new_extension$
 	@splitext_path: .path$
 	.root$ = splitext_path.return$#[1]
 	.return$ = .root$ + "." + .new_extension$
+endproc
+
+procedure with_suffix: .path$, .new_extension$
+	# Split a path into a pair (root, ext) such that root + ext == path,
+	# and ext is empty or begins with a period and contains at most
+	# one period. Leading periods on the basename are ignored.
+	#
+	# Parameters
+	# ----------
+	# .path$ : string
+	# 	An input path.
+	#
+	# .new_extension$ : string
+	#	The target extension. It must start with "." (e.g. .wav, .TextGrid)
+	#
+	# Return
+	# ------
+	# vector : {string, string}
+	# 	A vector with two elements: (1) the root path and the
+	#  (2) extension.
+	#
+	@splitext_path: .path$
+	.root$ = splitext_path.return$#[1]
+	.return$ = .root$ + .new_extension$
 endproc
 
 procedure get_pair_path: .path$, .target_extension$, .target_dirname$, .rel_dirname
@@ -77,7 +109,22 @@ procedure basename: .path$
 endproc
 
 procedure splitext_path: .path$
-	# Split the pathname path into a pair (root, ext) such that root + ext == path, and ext is empty or begins with a period and contains at most one period. Leading periods on the basename are ignored
+	# @splitext_path: path$
+	# Split a path into a pair (root, ext) such that root + ext == path,
+	# and ext is empty or begins with a period and contains at most
+	# one period. Leading periods on the basename are ignored.
+	#
+	# Parameters
+	# ----------
+	# .path$ : string
+	# 	An input path.
+	#
+	# Return
+	# ------
+	# vector : {string, string}
+	# 	A vector with two elements: (1) the root path and the
+	#  (2) extension.
+	#
 	@unixpath: .path$
 	@basename: unixpath.return$
 	if index(basename.return$, ".")
@@ -112,7 +159,10 @@ procedure join_many_paths: .paths$#
 endproc
 
 procedure split_path: .path$
-	#Split the pathname path into a pair, (head, tail) where tail is the last pathname component and head is everything leading up to that. The tail part will never contain a slash; if path ends in a slash, tail will be empty
+	# Split the pathname path into a pair, (head, tail) where tail is
+	# the last pathname component and head is everything leading up to
+	# that. The tail part will never contain a slash; if path ends in 
+	# a slash, tail will be empty.
 	@unixpath: .path$
 	.normpath$ = unixpath.return$
 
