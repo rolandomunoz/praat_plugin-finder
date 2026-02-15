@@ -16,15 +16,18 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
-procedure make_dirs: .path$
+procedure make_dir: .path$
+	clearinfo
     @iterate_path: .path$
 	for .i to size(iterate_path.return$#)
 	    .path$= iterate_path.return$#[.i]
             if .i != 1
-               createDirectory(.path$)
+				appendInfoLine: .path$
+				#createDirectory(.path$)
             endif
 	endfor
 endproc
+
 
 procedure iterate_path: .path$
 	.objects# = selected#()
@@ -45,20 +48,27 @@ procedure iterate_path: .path$
 	.return$# = .dirnames$#
 endproc
 
-procedure basename_without_extension: .path$
+
+procedure stem_path: .path$
+	# Return the basename without the extension of a path.
+	#
+	# Parameters
+	# ----------
+	# .path$ : string
+	# 	An input path.
+	#
+	# Return
+	# ------
+	# string
+	# 	The basename without extension.
+	#
 	@basename: .path$
 	@splitext_path: basename.return$
 	.return$ = splitext_path.return$#[1]
 endproc
 
-# Dreprecated: use with_suffix instead
-procedure swap_extension: .path$, .new_extension$
-	@splitext_path: .path$
-	.root$ = splitext_path.return$#[1]
-	.return$ = .root$ + "." + .new_extension$
-endproc
 
-procedure with_suffix: .path$, .new_extension$
+procedure swap_extension: .path$, .new_extension$
 	# Split a path into a pair (root, ext) such that root + ext == path,
 	# and ext is empty or begins with a period and contains at most
 	# one period. Leading periods on the basename are ignored.
@@ -82,34 +92,72 @@ procedure with_suffix: .path$, .new_extension$
 	.return$ = .root$ + .new_extension$
 endproc
 
-procedure get_pair_path: .path$, .target_extension$, .target_dirname$, .rel_dirname
-	@basename: .path$
-	@swap_extension: basename.return$, .target_extension$
-	.target_basename$ = swap_extension.return$		
-	
-	if .rel_dirname
-		@dirname: .path$
-		.dirname$ = dirname.return$
-		@join_many_paths: {.dirname$, .target_dirname$, .target_basename$}
-	else
-		# Relative to the audio directory
-		@join_many_paths: {.target_dirname$, .target_basename$}
-	endif
-	.return$ = join_many_paths.return$
-endproc
 
 procedure dirname: .path$
 	@split_path: .path$
 	.return$ = split_path.return$#[1]
 endproc
 
+
 procedure basename: .path$
 	@split_path: .path$
 	.return$ = split_path.return$#[2]
 endproc
 
+
+procedure join_path: .path$, .paths$#
+	# Join one or more path segments intelligently.
+	#
+	# Parameters
+	# ----------
+	# .path$ : string
+	#	The main path.
+	# .items$ : string vector
+	# 	The elements to be added into the main path.
+	#
+	# Return
+	# ------
+	# string
+	#	A path made of the vector elements.
+	for .i to size(.paths$#)
+		.path$ = .path$ + "/" + .paths$#[.i]
+	endfor
+	@unixpath: .path$
+	.return$ = unixpath.return$
+endproc
+
+
+procedure split_path: .path$
+	# Split the pathname path into a pair, (head, tail) where tail is
+	# the last pathname component and head is everything leading up to
+	# that. The tail part will never contain a slash; if path ends in 
+	# a slash, tail will be empty.
+	#
+	# Paremeters
+	# ----------
+	# .path$ : string
+	#	The input path.
+	#
+	# Returns
+	# -------
+	# {string, string}
+	# 	A 2-vector containing the head and tail of the path.
+	#
+	@unixpath: .path$
+	.normpath$ = unixpath.return$
+
+	if endsWith(.normpath$, "/")
+		.head$ = replace_regex$(.normpath$, "(.*)/", "\1", 0)
+		.return$# = {.head$, ""}
+	else
+		.head$ = replace_regex$(.normpath$, "(.*)/(.+)", "\1", 0)
+		.tail$ = replace_regex$(.normpath$, "(.*)/(.+)", "\2", 0)
+		.return$# = {.head$, .tail$ }
+	endif
+endproc
+
+
 procedure splitext_path: .path$
-	# @splitext_path: path$
 	# Split a path into a pair (root, ext) such that root + ext == path,
 	# and ext is empty or begins with a period and contains at most
 	# one period. Leading periods on the basename are ignored.
@@ -124,6 +172,15 @@ procedure splitext_path: .path$
 	# vector : {string, string}
 	# 	A vector with two elements: (1) the root path and the
 	#  (2) extension.
+	#
+	# Examples
+	# --------
+	# /home/foo/abc.txt -> {"/home/foo/abc", ".txt"}
+	# /home/foo/abc.wav.TextGrid -> {"/home/foo/abc.wav", ".TextGrid"}
+	# /home/foo/.txt -> {"/home/foo/.txt", ""}
+	# /home/foo/abc. -> {"/home/foo/abc.", ""}
+	# /home/foo/abc.wav..TextGrid -> {"/home/foo/abc.wav.", ".TextGrid"}
+	# /home/foo/..txt -> {"/home/foo/.", ".txt"}
 	#
 	@unixpath: .path$
 	@basename: unixpath.return$
@@ -141,46 +198,13 @@ procedure splitext_path: .path$
 	.return$# = {.root$, .ext$}
 endproc
 
-procedure join_paths: .path1$, .path2$
-	.new_path$ = .path1$ + "/" + .path2$
-	@unixpath: .new_path$
-	.return$ = unixpath.return$
-endproc
-
-procedure join_many_paths: .paths$#
-	.new_path$ = ""
-	for .i to size(.paths$#)
-		.path$ = .paths$#[.i]
-		.new_path$+= .path$ + "/"
-	endfor
-	.new_path$ = .new_path$ - "/"
-	@unixpath: .new_path$
-	.return$ = unixpath.return$
-endproc
-
-procedure split_path: .path$
-	# Split the pathname path into a pair, (head, tail) where tail is
-	# the last pathname component and head is everything leading up to
-	# that. The tail part will never contain a slash; if path ends in 
-	# a slash, tail will be empty.
-	@unixpath: .path$
-	.normpath$ = unixpath.return$
-
-	if endsWith(.normpath$, "/")
-		.head$ = replace_regex$(.normpath$, "(.*)/", "\1", 0)
-		.return$# = {.head$, ""}
-	else
-		.head$ = replace_regex$(.normpath$, "(.*)/(.+)", "\1", 0)
-		.tail$ = replace_regex$(.normpath$, "(.*)/(.+)", "\2", 0)
-		.return$# = {.head$, .tail$ }
-	endif
-endproc
 
 procedure unixpath: .path$
 	# On Windows, it converts forward slashes to backward slashes
 	.temp_path$ = replace$(.path$, "\", "/", 0)
 	.return$ = replace_regex$(.temp_path$, "/+", "/", 0)
 endproc
+
 
 procedure normpath: .path$
 	# On Windows, it converts forward slashes to backward slashes
