@@ -1,3 +1,4 @@
 src/plugin_finder/temp/*
 src/plugin_finder/preferences.txt
 build
+tests/data_output
