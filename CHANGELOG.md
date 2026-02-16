@@ -20,11 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update documentation website.
-- `Create index`: verify if input directory exists before running th
+- `Create index`: verify if input directory exists before running the
 	command.
 - `Create index`: Use `folder` type instead of `text` in  the TextGrid
 	directory field.
 - `Extract files`: Use `folder` type instead of `text` in 'Save in' field.
+- `Search`: Print matched words when completed.
 - `View & Edit files`: Replaced the boolean field with an option menu
 	for selecting between relative and absolute sound paths
 - UI: Refined dialog labels for better clarity.
