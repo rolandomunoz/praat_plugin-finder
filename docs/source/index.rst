@@ -47,6 +47,14 @@ on how to integrate Finder into your linguistic projects.
    02-search
    03-tasks
 
+Support
+-------
+
+.. hint::
+	If you find this plugin useful, you can support its development by
+	`buying me a coffee <https://buymeacoffee.com/rolandomunoz>`_. 
+	Your contributions help me keep the project updated and free for everyone.
+
 Indices and tables
 ==================
 
