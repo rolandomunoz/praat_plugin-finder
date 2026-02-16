@@ -1,5 +1,5 @@
-Step 1: Indexing TextGrids
---------------------------
+Step 1: Index TextGrids
+-----------------------
 
 Indexing TextGrid files is the starting point for this plug-in.
 When running this operation, Praat will read the TextGrid files in a 
