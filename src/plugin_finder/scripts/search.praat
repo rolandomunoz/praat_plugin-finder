@@ -23,7 +23,14 @@ config_path$ = "../preferences.txt"
 index_table_path$ =  "../temp/index.Table"
 tier_table_path$ = "../temp/tier_summary.Table"
 
-script_name$# = {"", "open_files.praat", "extract_files-dialog.praat", "filter_search.praat", "report_search.praat", "report_frequency.praat"}
+script_name$# = {
+	... "",
+	... "open_files.praat",
+	... "extract_files-dialog.praat",
+	... "filter_search.praat",
+	... "report_search.praat",
+	... "report_frequency.praat"
+	...}
 
 temp_object# = selected#()
 
@@ -91,12 +98,40 @@ repeat
 	n_cases = object[tb_search].nrow
 
 	Save as text file: "../temp/search.Table"
-
+ 	
 	## Print Info
-	writeInfoLine: "Search... Done!"
-	appendInfoLine: "Search for: ", search_for$
-	appendInfoLine: "Tier name: ", tier_name$
-	appendInfoLine: "Total number of occurrences: ", n_cases
+	writeInfoLine: "Search complete."
+	appendInfoLine: ""
+	appendInfoLine: "Pattern: ", """", search_for$, """"
+	appendInfoLine: "Mode: ", """", mode$, """"
+	appendInfoLine: "Tier: ", """", tier_name$, """"
+	appendInfoLine: "Matches: ", n_cases
+	appendInfoLine: ""
+
+	if n_cases > 0
+		appendInfoLine: "Unique Results"
+		appendInfoLine: "--------------"
+
+		selectObject: tb_search
+		Append column: "tmp_count"
+		Formula: "tmp_count", ~1
+
+		tb_stats = Collapse rows: { "text" }, { "tmp_count" }, 
+					... empty$# (0), empty$# (0),
+					... empty$# (0), empty$# (0)
+
+		labels$# = Get all texts in column: "text"
+		count# = Get all numbers in column: "tmp_count"
+		n_categories = size(labels$#)
+		n_categories_tmp = if n_categories > 20 then 20 else n_categories fi
+		for i to n_categories_tmp
+			appendInfoLine: i, ": ", labels$#[i], " (= ", count#[i], ")"
+		endfor
+		if n_categories > 20
+			appendInfoLine: "and more..."
+		endif
+		removeObject: tb_stats
+	endif
 
 	# Action
 	if n_cases
