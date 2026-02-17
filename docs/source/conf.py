@@ -31,9 +31,9 @@ release = 'v2.4'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'sphinx.ext.graphviz',
-	'sphinx_design'
-	]
+    'sphinx.ext.graphviz',
+    'sphinx_design'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
