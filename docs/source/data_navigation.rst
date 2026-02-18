@@ -1,5 +1,5 @@
-Data navegation
-===================
+View and Edit
+=============
 
 Once a search is performed, you can navigate through the results using
 the `View & Edit files` command. This command displays the labels in

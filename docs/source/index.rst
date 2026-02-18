@@ -14,7 +14,7 @@ the diagram.
    digraph Flatland {
 
       "Index TextGrids" -> Search -> Tasks;
-      Tasks -> "View and Edit";
+      Tasks -> "View and edit";
       Tasks -> "Extract files";
       Tasks -> "Reports";
       }
@@ -51,9 +51,9 @@ Support
 -------
 
 .. hint::
-	If you find this plugin useful, you can support its development by
-	`buying me a coffee <https://buymeacoffee.com/rolandomunoz>`_. 
-	Your contributions help me keep the project updated and free for everyone.
+    If you find this plugin useful, you can support its development by
+    `buying me a coffee <https://buymeacoffee.com/rolandomunoz>`_. 
+    Your contributions help me keep the project updated and free for everyone.
 
 Indices and tables
 ==================

@@ -1,5 +1,5 @@
-Extracting data
-===============
+Extracting files
+================
 
 Once you carry out a search, you can extract the sound and the
 transcribed segments corresponding to the found items.

@@ -10,15 +10,7 @@ two steps.
    :maxdepth: 2
    :caption: Content:
 
-   extracting_data
    data_navigation
-
-Create reports
-~~~~~~~~~~~~~~
-* Create reports of their annotation files.
-* Create a table containing the number of occurrences of the transcribed items (e.g., words)
-* Table containing the time where certain items occurred.
-
-Running scripts
-~~~~~~~~~~~~~~~
-Make use of the script template function to script more specific tasks (advanced users)
+   extracting_data
+   report
+   scripts
