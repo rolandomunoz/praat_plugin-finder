@@ -3,7 +3,7 @@ Author: Rolando Muñoz A. <rolando.ma@hotmail.com>
 Homepage: https://github.com/rolandomunoz/praat_plugin-finder
 Documentation: https://plugin-finder.readthedocs.io/en/latest/
 Version: 2.4.0
-Last modified: 2026-02-16
+Last modified: 2026-02-18
 Description:
   - A tool search for TextGrid files. Once a label is match, do some actions.
 Depends:
