@@ -83,9 +83,18 @@ be able to see the ``Finder`` submenu as shown in :numref:`plugin_menu`.
 
     .. _plugin_menu:
 
-    .. figure:: img/finder_menu.png
+    .. figure:: img/finder_menu-linux.png
        :align: center
        
        The plug-in menu
 
     .. _link: https://github.com/rolandomunoz/plugin_finder/releases/latest
+
+.. note::
+
+    The location of the Praat **preferences folder** could change 
+    in Praat 7.xx. Always keep an eye on the section 
+    `preferences folder`_ in the Praat manual to see where it is 
+    located.
+
+    .. _preferences folder: https://www.fon.hum.uva.nl/praat/manual/preferences_folder.html
